@@ -1,124 +1,60 @@
 import * as React from 'react';
-import Card from 'react-bootstrap/Card';
-import AddTodoField from './AddTodoField';
+import AddTodo from './AddTodo';
 import TodoList from './TodoList';
-import Table from 'react-bootstrap/Table';
+import Card from 'react-bootstrap/Card';
+
+const sample = [
+    {
+        id: 1,
+        name: 'Wake up'
+    },
+    {
+        id: 2,
+        name: 'Go to school'
+    },
+    {
+        id: 3,
+        name: 'Go to college'
+    },
+];
 
 const Main = ()=>{
-    const [listData, setListData] = React.useState([]);
+    const [todoList, setTodoList] = React.useState([]);
 
-    const listDataManipulator = (text)=>{
-        const listDataObject = {
-            id: listData.length+1,
-            text: text
-        }
-        
-        const finalList = [...listData, listDataObject];
-        setListData(finalList);
+    const addCallback = (todoText)=>{
+        const uniqueId = Date.now();
+        setTodoList([...todoList, {id: uniqueId, name: todoText}]);
     }
 
-    const listDataDeleteManipulator = (deleteionId)=>{
-        const finalData = listData.filter(function(el){
-            if(el.id === deleteionId){
-                return false;
-            }else{
-                return true;
-            }
-        });
-        setListData(finalData);
+    const editCallback = (id, name)=>{
+        const newTaskName = prompt("Updated task name", name);
+        const allTasks = Object.assign([], todoList);
+
+        const position = allTasks.findIndex(el=>el.id == id);
+        allTasks[position] = {
+            id: id,
+            name: newTaskName
+        };
+        
+        setTodoList(allTasks);
+    }
+    const deleteCallback = (id)=>{
+        console.log(id);
     }
 
     return (
-        <section className='main-component'>
-            <div className='container'>
-                <div className='col-lg-12' style={{ marginTop: "10em" }}>
-                    <Card>
-                        <Card.Body>
-                            <Card.Title>Todo List</Card.Title>
+        <div className='container'>
+            <div className='col-md-offset-3 col-lg-6'></div>
+            <Card>
+                <Card.Body>
 
-
-
-                            <AddTodoField listDataManipulator={listDataManipulator} />
-                            <hr />
-                            <Table striped bordered hover>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Task</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <TodoList callback={listDataDeleteManipulator} list={listData} />
-                                </tbody>
-                            </Table>
-                        </Card.Body>
-                    </Card>
-
-                </div>
-            </div>
-        </section>
+                    <h3>My Todo List</h3>
+                    <AddTodo callback={addCallback} />
+                    <TodoList onEdit={editCallback} onDelete={deleteCallback} tasks={todoList} />
+                </Card.Body>
+            </Card>
+        </div>
     );
 }
 
 export default Main;
-
-
-// export class Main_old extends React.Component {
-//     constructor() {
-//         super();
-//         //iniitial state of the todo
-//         this.state = {
-//             list: []
-//         };
-
-//         this.onTodoAdd = this.onTodoAdd.bind(this);
-//     }
-
-//     onTodoAdd(text) {
-//         const finalList = { list: [...this.state.list, { id: this.generateRandomNum(), text: text }] };
-//         console.log(finalList);
-//         this.setState(finalList);
-//     }
-
-//     callbackExample(text){
-//         console.log(text);
-//     }
-
-//     //imp
-//     generateRandomNum = () => Math.floor(Math.random() * 1000);
-
-//     render() {
-//         return (
-//             <section className='main-component'>
-//                 <div className='container'>
-//                     <div className='col-lg-12' style={{ marginTop: "10em" }}>
-//                         <Card>
-//                             <Card.Body>
-//                                 <Card.Title>Todo List</Card.Title>
-
-
-
-//                                 <AddTodoField callback={this.callbackExample} onAdd={this.onTodoAdd} />
-//                                 <hr />
-//                                 <Table striped bordered hover>
-//                                     <thead>
-//                                         <tr>
-//                                             <th>#</th>
-//                                             <th>Task</th>
-//                                             <th>Action</th>
-//                                         </tr>
-//                                     </thead>
-//                                     <tbody>
-//                                         <TodoList list={this.state.list} />
-//                                     </tbody>
-//                                 </Table>
-//                             </Card.Body>
-//                         </Card>
-
-//                     </div>
-//                 </div>
-//             </section>
-//         );
-//     }
-// }
